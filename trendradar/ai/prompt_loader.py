@@ -36,7 +36,7 @@ def load_prompt_template(
         print(f"[{label}] 提示词文件不存在: {prompt_path}")
         return "", ""
 
-    content = prompt_path.read_text(encoding="utf-8")
+    content = prompt_path.read_text(encoding="utf-8-sig")
 
     system_prompt = ""
     user_prompt = ""

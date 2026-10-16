@@ -107,7 +107,7 @@ def check_all_versions(
             continue
 
         try:
-            with open(config_file, "r", encoding="utf-8") as f:
+            with open(config_file, "r", encoding="utf-8-sig") as f:
                 local_version = None
                 for i, line in enumerate(f):
                     if i >= 20:

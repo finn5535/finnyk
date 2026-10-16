@@ -109,7 +109,7 @@ class AIFilter:
             print(f"[AI筛选] 兴趣描述文件不存在: {interests_path}")
             return None
 
-        content = interests_path.read_text(encoding="utf-8").strip()
+        content = interests_path.read_text(encoding="utf-8-sig").strip()
         if not content:
             print("[AI筛选] 兴趣描述文件为空")
             return None

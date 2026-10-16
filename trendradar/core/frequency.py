@@ -133,7 +133,7 @@ def load_frequency_words(
         else:
             raise FileNotFoundError(f"频率词文件 {frequency_file} 不存在")
 
-    with open(frequency_path, "r", encoding="utf-8") as f:
+    with open(frequency_path, "r", encoding="utf-8-sig") as f:
         content = f.read()
 
     word_groups = [group.strip() for group in content.split("\n\n") if group.strip()]

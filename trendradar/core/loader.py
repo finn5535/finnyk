@@ -155,7 +155,7 @@ def _load_timeline_data(config_dir: str = "config") -> Dict:
             },
         }
 
-    with open(timeline_path, "r", encoding="utf-8") as f:
+    with open(timeline_path, "r", encoding="utf-8-sig") as f:
         data = yaml.safe_load(f)
 
     print(f"[调度] timeline.yaml 加载成功: {timeline_path}")
@@ -540,7 +540,7 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     if not Path(config_path).exists():
         raise FileNotFoundError(f"配置文件 {config_path} 不存在")
 
-    with open(config_path, "r", encoding="utf-8") as f:
+    with open(config_path, "r", encoding="utf-8-sig") as f:
         config_data = yaml.safe_load(f)
 
     print(f"配置文件加载成功: {config_path}")
