@@ -23,6 +23,7 @@ class AIAnalysisResult:
     signals: str = ""                    # 异动与弱信号
     rss_insights: str = ""               # RSS 深度洞察
     outlook_strategy: str = ""           # 研判与策略建议
+    portfolio_impact: str = ""           # 关注标的影响分析（格林美/紫金矿业/蔚蓝锂芯/银轮股份）
     standalone_summaries: Dict[str, str] = field(default_factory=dict)  # 独立展示区概括 {源ID: 概括}
 
     # 基础元数据
@@ -627,6 +628,7 @@ class AIAnalyzer:
             result.signals = data.get("signals", "")
             result.rss_insights = data.get("rss_insights", "")
             result.outlook_strategy = data.get("outlook_strategy", "")
+            result.portfolio_impact = data.get("portfolio_impact", "")
 
             # 解析独立展示区概括
             summaries = data.get("standalone_summaries", {})

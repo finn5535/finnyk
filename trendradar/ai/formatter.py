@@ -123,6 +123,11 @@ def _render_ai_analysis_markdown_like(
             ["**研判策略建议**", _format_list_content(result.outlook_strategy), ""]
         )
 
+    if result.portfolio_impact:
+        lines.extend(
+            ["**关注标的影响分析**", _format_list_content(result.portfolio_impact), ""]
+        )
+
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(
             result.standalone_summaries, *standalone_brackets
@@ -186,6 +191,11 @@ def render_ai_analysis_dingtalk(result: AIAnalysisResult) -> str:
             ["#### 研判策略建议", _format_list_content(result.outlook_strategy), ""]
         )
 
+    if result.portfolio_impact:
+        lines.extend(
+            ["#### 关注标的影响分析", _format_list_content(result.portfolio_impact), ""]
+        )
+
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
         if summaries_text:
@@ -219,6 +229,9 @@ def render_ai_analysis_plain(result: AIAnalysisResult) -> str:
 
     if result.outlook_strategy:
         lines.extend(["[研判策略建议]", _format_list_content(result.outlook_strategy), ""])
+
+    if result.portfolio_impact:
+        lines.extend(["[关注标的影响分析]", _format_list_content(result.portfolio_impact), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -256,6 +269,9 @@ def render_ai_analysis_telegram(result: AIAnalysisResult) -> str:
 
     if result.outlook_strategy:
         lines.extend(["<b>研判策略建议</b>", _escape_html(_format_list_content(result.outlook_strategy)), ""])
+
+    if result.portfolio_impact:
+        lines.extend(["<b>关注标的影响分析</b>", _escape_html(_format_list_content(result.portfolio_impact)), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -348,6 +364,15 @@ def render_ai_analysis_html_rich(result: AIAnalysisResult) -> str:
         ai_html += f"""
                     <div class="ai-block">
                         <div class="ai-block-title">研判策略建议</div>
+                        <div class="ai-block-content">{content_html}</div>
+                    </div>"""
+
+    if result.portfolio_impact:
+        content = _format_list_content(result.portfolio_impact)
+        content_html = _escape_html(content).replace("\n", "<br>")
+        ai_html += f"""
+                    <div class="ai-block">
+                        <div class="ai-block-title">关注标的影响分析</div>
                         <div class="ai-block-content">{content_html}</div>
                     </div>"""
 
