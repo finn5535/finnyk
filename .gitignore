@@ -10,3 +10,7 @@ output/*.txt
 # 这 34 张截图占 7.7 MB，为了让首次推送能在这条不稳的链路上成功而排除。
 # 需要恢复 README 里的图片显示时，删掉下面这行再 git add _image 即可。
 _image/
+
+# Python �ֽ��뻺��
+__pycache__/
+*.pyc
