@@ -1443,14 +1443,20 @@ class NewsAnalyzer:
                 since = self.ctx.get_storage_manager().get_last_period_execution_hhmm(
                     self.ctx.format_date()
                 )
-                if since:
-                    from trendradar.core.data import detect_new_titles_since
+                # 当天还没有成功推送过（例如 11:30 那份）：以当天 0 点为界，
+                # 覆盖 00:00 到此刻的全部新增。
+                # 注意不能回退到默认的「最新采集批次」逻辑：因为每小时都在采集，
+                # 到 11:30 时“当天第一次采集”早已不是 11:30 这一批，
+                # 那样早间报告只会覆盖最近 1 小时，丢掉大半个上午。
+                if not since:
+                    since = "00:00"
+                from trendradar.core.data import detect_new_titles_since
 
-                    new_titles = detect_new_titles_since(
-                        self.ctx.get_storage_manager(), since, current_platform_ids
-                    )
-                    total_new = sum(len(v) for v in new_titles.values())
-                    print(f"[增量] 上次推送于 {since}，此后新增 {total_new} 条（跨采集批次合并，已去重）")
+                new_titles = detect_new_titles_since(
+                    self.ctx.get_storage_manager(), since, current_platform_ids
+                )
+                total_new = sum(len(v) for v in new_titles.values())
+                print(f"[增量] 上次推送于 {since}，此后新增 {total_new} 条（跨采集批次合并，已去重）")
             except Exception as e:
                 print(f"[增量] 以推送时间为界判定失败，回退默认逻辑: {e}")
 
