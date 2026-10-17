@@ -1108,8 +1108,14 @@ class NewsAnalyzer:
         """
         from trendradar.core.analyzer import count_rss_frequency
 
-        # 从 display.regions.rss 统一控制 RSS 分析和展示
-        rss_display_enabled = self.ctx.config.get("DISPLAY", {}).get("REGIONS", {}).get("RSS", True)
+        # RSS 统计分析是否执行：展示需要【或】AI 分析需要，满足其一即可。
+        # 注意这与「是否展示 RSS 区域」是两件事：展示由 display.regions.rss 在
+        # dispatcher._apply_display_regions 中单独控制，因此
+        # 「RSS 进 AI 分析、但不出现在推送里」是可行的组合。
+        rss_display_enabled = (
+            self.ctx.config.get("DISPLAY", {}).get("REGIONS", {}).get("RSS", True)
+            or self.ctx.config.get("AI_ANALYSIS", {}).get("INCLUDE_RSS", False)
+        )
 
         # 加载关键词配置
         try:

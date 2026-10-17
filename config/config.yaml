@@ -127,26 +127,44 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    - id: "hacker-news"
-      name: "Hacker News"
-      url: "https://hnrss.org/frontpage"
+    # ── 公司定向：只抓这几家公司的新闻 ──────────────────────
+    - id: "gem"
+      name: "格林美"
+      url: "https://news.google.com/rss/search?q=%E6%A0%BC%E6%9E%97%E7%BE%8E&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
 
-    - id: "ruanyifeng"
-      name: "阮一峰的网络日志"
-      url: "http://www.ruanyifeng.com/blog/atom.xml"
-      enabled: false                  # 禁用
-      # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
-     
-    - id: "yahoo-finance"
-      name: "雅虎财经"
-      url: "https://finance.yahoo.com/news/rssindex"
+    - id: "zijin"
+      name: "紫金矿业"
+      url: "https://news.google.com/rss/search?q=%E7%B4%AB%E9%87%91%E7%9F%BF%E4%B8%9A&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
 
-    # 自定义源示例
-    # - id: "custom-feed"
-    #   name: "自定义源"
-    #   url: "https://example.com/feed.xml"
-    #   enabled: false
-    #   max_age_days: 0               # 示例：禁用过滤，推送所有文章
+    - id: "weilan"
+      name: "蔚蓝锂芯"
+      url: "https://news.google.com/rss/search?q=%E8%94%9A%E8%93%9D%E9%94%82%E8%8A%AF&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    - id: "yinlun"
+      name: "银轮股份"
+      url: "https://news.google.com/rss/search?q=%E9%93%B6%E8%BD%AE%E8%82%A1%E4%BB%BD&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    # ── 主题定向 ────────────────────────────────────────────
+    - id: "nicom"
+      name: "镍钴"
+      url: "https://news.google.com/rss/search?q=%E9%95%8D+%E9%92%B4&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    - id: "recycle"
+      name: "电池回收"
+      url: "https://news.google.com/rss/search?q=%E5%8A%A8%E5%8A%9B%E7%94%B5%E6%B1%A0+%E5%9B%9E%E6%94%B6&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    # ── 官方财经媒体定向（site: 限定，只取该站内容）──────────
+    - id: "stcn"
+      name: "证券时报"
+      url: "https://news.google.com/rss/search?q=site:stcn.com&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    - id: "yicai"
+      name: "第一财经"
+      url: "https://news.google.com/rss/search?q=site:yicai.com&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    - id: "cnstock"
+      name: "上海证券报"
+      url: "https://news.google.com/rss/search?q=site:cnstock.com&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
 
 
 # ===============================================================
@@ -425,7 +443,7 @@ ai_analysis:
   max_news_for_analysis: 150        # 参与分析的新闻数量上限（控制 token 成本的关键项）
                                     # 热榜优先占用配额，RSS 用剩余配额，独立展示区不受此限制
 
-  include_rss: false                # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
+  include_rss: true                 # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
   include_standalone: true          # 是否纳入独立展示区数据（true=纳入, false=不纳入）
 
   include_rank_timeline: true       # 排名时间线详细程度
