@@ -1435,6 +1435,25 @@ class NewsAnalyzer:
         current_platform_ids = self.ctx.platform_ids
 
         new_titles = self.ctx.detect_new_titles(current_platform_ids)
+
+        # 增量模式：若当天此前已推送过，则以「上次推送时间」为界重新计算新增，
+        # 避免同一批新闻在 11:30 / 15:30 / 23:30 被反复送进 AI 分析。
+        if self.report_mode == "incremental":
+            try:
+                since = self.ctx.get_storage_manager().get_last_period_execution_hhmm(
+                    self.ctx.format_date()
+                )
+                if since:
+                    from trendradar.core.data import detect_new_titles_since
+
+                    new_titles = detect_new_titles_since(
+                        self.ctx.get_storage_manager(), since, current_platform_ids
+                    )
+                    total_new = sum(len(v) for v in new_titles.values())
+                    print(f"[增量] 上次推送于 {since}，此后新增 {total_new} 条（跨采集批次合并，已去重）")
+            except Exception as e:
+                print(f"[增量] 以推送时间为界判定失败，回退默认逻辑: {e}")
+
         time_info = self.ctx.format_time()
         word_groups, filter_words, global_filters = self.ctx.load_frequency_words(self.frequency_file)
 

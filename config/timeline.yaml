@@ -404,9 +404,9 @@ custom:
   default:
     collect: true
     analyze: false
-    ai_mode: "daily"
+    ai_mode: "follow_report"
     push: false
-    report_mode: "daily"
+    report_mode: "incremental"
     once:
       analyze: true
       push: true
@@ -421,9 +421,9 @@ custom:
       start: "11:00"
       end: "12:30"
       analyze: true
-      ai_mode: "daily"
+      ai_mode: "follow_report"
       push: true
-      report_mode: "daily"
+      report_mode: "incremental"
       once:
         analyze: true
         push: true
@@ -433,9 +433,9 @@ custom:
       start: "15:00"
       end: "16:30"
       analyze: true
-      ai_mode: "daily"
+      ai_mode: "follow_report"
       push: true
-      report_mode: "daily"
+      report_mode: "incremental"
       once:
         analyze: true
         push: true
@@ -445,9 +445,9 @@ custom:
       start: "23:00"
       end: "23:59"
       analyze: true
-      ai_mode: "daily"
+      ai_mode: "follow_report"
       push: true
-      report_mode: "daily"
+      report_mode: "incremental"
       once:
         analyze: true
         push: true

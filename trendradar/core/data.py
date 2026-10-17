@@ -195,6 +195,62 @@ def detect_latest_new_titles_from_storage(
         return {}
 
 
+def detect_new_titles_since(
+    storage_manager,
+    since_hhmm: str,
+    current_platform_ids: Optional[List[str]] = None,
+) -> Dict:
+    """检测「首次出现时间晚于 since_hhmm」的标题（跨多次采集的全天合并）
+
+    与 detect_latest_new_titles_from_storage 的区别：
+      那个只统计「最新一次采集」这一批 → 每小时采集时，窗口会缩成 1 小时；
+      这个以「上次推送时间」为界 → 能覆盖上次推送到这次推送之间的全部新增，
+      包括中途上过榜又掉榜的新闻（这正是分段报告需要的）。
+
+    Args:
+        storage_manager: 存储管理器实例
+        since_hhmm: 时间边界，HH:MM 格式（如 "15:30"）
+        current_platform_ids: 当前监控的平台 ID 列表（用于过滤）
+
+    Returns:
+        Dict: 新增标题 {source_id: {title: title_data}}
+    """
+    try:
+        if not since_hhmm:
+            return {}
+        all_data = storage_manager.get_today_all_data()
+        if not all_data or not all_data.items:
+            return {}
+
+        new_titles = {}
+        for source_id, news_list in all_data.items.items():
+            if current_platform_ids is not None and source_id not in current_platform_ids:
+                continue
+            bucket = {}
+            for item in news_list:
+                first_time = item.first_time or item.crawl_time or ""
+                if not first_time or first_time <= since_hhmm:
+                    continue
+                rank = item.rank if item.rank is not None else 999
+                prev = bucket.get(item.title)
+                # 同一标题可能有多条（不同 URL），保留排名最好的一条
+                if prev is None or rank < prev["_rank"]:
+                    bucket[item.title] = {
+                        "ranks": [rank],
+                        "url": item.url or "",
+                        "mobileUrl": item.mobile_url or "",
+                        "_rank": rank,
+                    }
+            if bucket:
+                for v in bucket.values():
+                    v.pop("_rank", None)
+                new_titles[source_id] = bucket
+        return new_titles
+    except Exception as e:
+        print(f"[存储] 按时间边界检测新标题失败: {e}")
+        return {}
+
+
 def detect_latest_new_titles(
     storage_manager,
     current_platform_ids: Optional[List[str]] = None,

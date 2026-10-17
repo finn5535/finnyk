@@ -769,6 +769,46 @@ class SQLiteStorageMixin:
             print(f"[存储] 检查时间段执行记录失败: {e}")
             return False
 
+    def get_last_period_execution_hhmm(self, date_str: str,
+                                       actions=("push",)) -> str:
+        """读取当天最近一次成功推送的时间，返回 HH:MM（读不到返回 ""）
+
+        用于「以上次推送为界」的增量判定：避免同一批新闻被反复送进 AI 分析。
+        只认 push、不含 analyze：若某次推送失败（未记录 push），下一份报告
+        应把那批内容重新包含进来，而不是永久跳过。
+        period_executions.executed_at 存的是 "YYYY-MM-DD HH:MM:SS"，
+        而 news_items.first_crawl_time 存的是 "HH:MM"，故此处截取时间部分。
+        """
+        try:
+            conn = self._get_connection(date_str)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT name FROM sqlite_master
+                WHERE type='table' AND name='period_executions'
+            """)
+            if not cursor.fetchone():
+                return ""
+            acts = tuple(a for a in actions if a)
+            if not acts:
+                return ""
+            placeholders = ",".join("?" * len(acts))
+            cursor.execute(
+                "SELECT executed_at FROM period_executions "
+                "WHERE execution_date = ? AND action IN (" + placeholders + ") "
+                "ORDER BY executed_at DESC LIMIT 1",
+                (date_str,) + acts,
+            )
+            row = cursor.fetchone()
+            if not row or not row[0]:
+                return ""
+            s = str(row[0]).strip()
+            if " " in s:
+                return s.split(" ", 1)[1][:5]
+            return s[:5]
+        except Exception as e:
+            print(f"[存储] 读取上次执行时间失败: {e}")
+            return ""
+
     def _record_period_execution_impl(self, date_str: str, period_key: str, action: str) -> bool:
         """
         记录时间段的 action 执行
