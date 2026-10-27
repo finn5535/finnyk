@@ -82,10 +82,12 @@ jobs:
             LIMIT_SECONDS=604800
 
             if [ $DIFF_SECONDS -gt $LIMIT_SECONDS ]; then
-              echo "⚠️ 试用期已结束，请运行 'Check In' 签到续期"
-              echo "⚠️ Trial expired. Run 'Check In' to renew."
-              gh workflow disable "$WORKFLOW_FILE"
-              exit 1
+              echo "⚠️ 已超过 7 天未签到。"
+              echo "ℹ️ 本仓库已关闭「自动禁用」：采集和推送照常进行，不会漏收报告。"
+              echo "ℹ️ 建议有空时跑一次 'Check In'（Actions → Check In → Run workflow）清空运行历史。"
+              # 注意：此处故意不执行任何禁用命令，也不以非零状态退出。
+              # 原版逻辑在超期时会禁用 workflow 并让整个任务失败，
+              # 后果是采集与推送都被跳过 —— 表现为「突然收不到任何报告」且无任何通知。
             else
               DAYS_LEFT=$(( (LIMIT_SECONDS - DIFF_SECONDS) / 86400 ))
               echo "✅ 试用期剩余 ${DAYS_LEFT} 天，到期前请运行 'Check In' 签到续期"
